@@ -11,5 +11,7 @@ COPY ./requirements.txt /urlhome/requirements.txt
 
 RUN pip3 install -r /urlhome/requirements.txt
 
+COPY nginx/nginx.conf /etc/nginx/
+
 WORKDIR /urlhome
 
