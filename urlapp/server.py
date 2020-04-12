@@ -28,11 +28,11 @@ def check_if_url_is_bad(url : str):
     return False
 
 @app.route('/add_url_api')
-def insert_mongo_db():
+def insert_db():
     url = request.args.get('url', default='', type=str)
     key = hashlib.md5(url.strip().encode('utf-8')).hexdigest()
     client.set(key, url.strip())
-    return 'Insert ' + str(item) + ' into redis!'
+    return 'Insert ' + url + ' into redis!'
 
 @app.route('/list_url_api')
 def get_db():
