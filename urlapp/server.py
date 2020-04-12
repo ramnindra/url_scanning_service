@@ -7,6 +7,12 @@ app = Flask(__name__)
 client = MongoClient('mongodb://urldb:27017/', connect=False)
 db = client.testdb
 
+bad_url_file = open('/data/bad_urls.txt', 'r')
+lines = bad_url_file.readlines()
+for line in lines:
+    item = {"url": line}
+    db.test_collection.insert_one(item)
+
 @app.route("/")
 def home_test():
     return "Hello Ram"
@@ -19,7 +25,7 @@ def check_if_url_is_bad(url : str):
 @app.route('/add_url_api')
 def insert_mongo_db():
     url = request.args.get('url', default='', type=str)
-    item = {"url" : url}
+    item = {"url" : url.strip()}
     db.test_collection.insert_one(item)
     return 'Insert ' + str(item) + ' into MongoDB!'
 
@@ -37,7 +43,6 @@ def check_url():
         return 'Url ' + str(url) + ' is bad\n'
     else:
         return 'Url ' + str(url) + ' is safe\n'
-
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", debug=True)
