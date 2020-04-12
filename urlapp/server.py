@@ -10,7 +10,7 @@ db = client.testdb
 bad_url_file = open('/data/bad_urls.txt', 'r')
 lines = bad_url_file.readlines()
 for line in lines:
-    item = {"url": line}
+    item = {"url": line.strip()}
     db.test_collection.insert_one(item)
 
 @app.route("/")
@@ -33,8 +33,8 @@ def insert_mongo_db():
 def get_mongo_db():
     result = []
     for document in db.test_collection.find():
-        result.append(document)
-    return 'Received \n' + str(result) + '\n from MongoDB\n'
+        result.append(document['url'])
+    return '\n'.join(result) + '\n'
 
 @app.route('/check_url_api')
 def check_url():
