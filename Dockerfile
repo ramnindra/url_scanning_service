@@ -6,6 +6,7 @@ RUN apt-get update
 RUN apt-get -y --no-install-recommends install nginx supervisor
 
 RUN pip3 install uwsgi
+RUN pip3 install redis
 
 COPY ./requirements.txt /urlhome/requirements.txt
 

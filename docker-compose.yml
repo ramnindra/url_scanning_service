@@ -9,5 +9,21 @@ services:
      - .:/urlhome
     depends_on:
      - urldb
+    networks:
+     - redis
   urldb:
-    image: "mongo"
+    image: redis:latest
+    ports:
+      - 6379:6379
+    networks:
+      redis:
+          ipv4_address: 10.5.5.91
+    volumes:
+      - ./redis.conf:/urlhome/redis.conf
+    command: [ "redis-server", "/urlhome/redis.conf" ]
+networks:
+  redis:
+    ipam:
+      driver: default
+      config:
+        - subnet: "10.5.5.0/24"

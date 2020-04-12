@@ -1,39 +1,45 @@
 
 import os
 from flask import Flask, request
-from pymongo import MongoClient
+import redis
+import hashlib
+
+
+# connect to redis
+#client = redis.Redis(host='redis-server', port=6379)
+client = redis.Redis(host="10.5.5.91", db=0, socket_connect_timeout=2, socket_timeout=2)
 
 app = Flask(__name__)
-client = MongoClient('mongodb://urldb:27017/', connect=False)
-db = client.testdb
 
 bad_url_file = open('/data/bad_urls.txt', 'r')
 lines = bad_url_file.readlines()
 for line in lines:
-    item = {"url": line.strip()}
-    db.test_collection.insert_one(item)
+    key = hashlib.md5(line.strip().encode('utf-8')).hexdigest()
+    client.set(key, line.strip())
 
 @app.route("/")
 def home_test():
     return "Hello Ram"
 
 def check_if_url_is_bad(url : str):
-    if db.test_collection.find({"url": url}).count() > 0:
+    key = hashlib.md5(url.encode('utf-8')).hexdigest()
+    if client.exists(key):
         return True
     return False
 
 @app.route('/add_url_api')
 def insert_mongo_db():
     url = request.args.get('url', default='', type=str)
-    item = {"url" : url.strip()}
-    db.test_collection.insert_one(item)
-    return 'Insert ' + str(item) + ' into MongoDB!'
+    key = hashlib.md5(url.strip().encode('utf-8')).hexdigest()
+    client.set(key, url.strip())
+    return 'Insert ' + str(item) + ' into redis!'
 
 @app.route('/list_url_api')
-def get_mongo_db():
+def get_db():
     result = []
-    for document in db.test_collection.find():
-        result.append(document['url'])
+    for key in client.scan_iter():
+        value = client.get(key)
+        result.append(str(value))
     return '\n'.join(result) + '\n'
 
 @app.route('/check_url_api')
