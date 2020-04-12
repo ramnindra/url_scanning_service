@@ -17,7 +17,3 @@ Give some thought to the following:
 ## Technical Details
 In design I choose Python/Flask/RESTful framework that connects to MongoDB for database store
 There will be multiple App Servers container processing request. MongoDB databases has its own slave.
-
-There are multiple slave DB instances (views) in AWS accessible via secret password.
-These are load balanced using 2-choice randomized algorithm (Power-of-d-choices (Pod)) located in core/util.py (see reference 1).
-The DB urls are hashed and indexed by hashed domain to speed up comparisons in the DB select statement.
