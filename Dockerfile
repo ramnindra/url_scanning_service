@@ -15,5 +15,8 @@ COPY nginx/nginx.conf /etc/nginx/
 COPY nginx/flask_nginx.conf /etc/nginx/conf.d/
 COPY nginx/uwsgi.ini /etc/uwsgi/
 
+RUN rm /etc/nginx/sites-enabled/default
+RUN rm -r /root/.cache
+
 WORKDIR /urlhome
 
