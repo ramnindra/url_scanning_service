@@ -8,10 +8,11 @@ Write a small web service, in the language/framework your choice, that responds 
        GET /urlinfo/1/{hostname_and_port}/{original_path_and_query_string}
 The caller wants to know if it is safe to access that URL or not. As the implementer, you get to choose the response format and structure. These lookups are blocking users from accessing the URL until the caller receives a response from your service.
 Give some thought to the following:
-● The size of the URL list could grow infinitely, how might you scale this beyond the memory capacity of this VM? Bonus if you implement this.
-● The number of requests may exceed the capacity of this VM, how might you solve that? Bonus if you implement this.
-● What are some strategies you might use to update the service with new URLs? Updates may be as much as 5 thousand URLs a day with updates arriving every 10 minutes.
-● Bonus points if you containerize the app. Email us your ideas.
+
+1. The size of the URL list could grow infinitely, how might you scale this beyond the memory capacity of this VM? Bonus if you implement this.
+2. The number of requests may exceed the capacity of this VM, how might you solve that? Bonus if you implement this.
+3. What are some strategies you might use to update the service with new URLs? Updates may be as much as 5 thousand URLs a day with updates arriving every 10 minutes.
+4. Bonus points if you containerize the app. Email us your ideas.
  
 ## Technical Details
 In design I choose Python/Flask/RESTful framework that connects to MongoDB for database store
