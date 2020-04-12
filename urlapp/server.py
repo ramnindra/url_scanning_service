@@ -4,18 +4,29 @@ from flask import Flask, request
 import redis
 import hashlib
 
+attempts = 10
+client = None
+while attempts > 0:
+    try:
+        client = redis.Redis(host="urldb", db=0, socket_connect_timeout=2, socket_timeout=2)
+        bad_url_file = open('/data/bad_urls.txt', 'r')
+        lines = bad_url_file.readlines()
+        for line in lines:
+            key = hashlib.md5(line.strip().encode('utf-8')).hexdigest()
+            client.set(key, line.strip())
+        attempts = 0
+        print("Ram : added bad urls to db")
+    except Exception as e:
+        attempts -= 1
+        print(e.message+" . Retrying after sleeping ")
+        time.sleep(5)
 
 # connect to redis
 #client = redis.Redis(host='redis-server', port=6379)
-client = redis.Redis(host="10.5.5.91", db=0, socket_connect_timeout=2, socket_timeout=2)
+#client = redis.Redis(host="urldb", db=0, socket_connect_timeout=2, socket_timeout=2)
 
 app = Flask(__name__)
 
-bad_url_file = open('/data/bad_urls.txt', 'r')
-lines = bad_url_file.readlines()
-for line in lines:
-    key = hashlib.md5(line.strip().encode('utf-8')).hexdigest()
-    client.set(key, line.strip())
 
 @app.route("/")
 def home_test():
