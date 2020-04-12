@@ -12,6 +12,8 @@ COPY ./requirements.txt /urlhome/requirements.txt
 RUN pip3 install -r /urlhome/requirements.txt
 
 COPY nginx/nginx.conf /etc/nginx/
+COPY nginx/flask_nginx.conf /etc/nginx/conf.d/
+COPY nginx/uwsgi.ini /etc/uwsgi/
 
 WORKDIR /urlhome
 
