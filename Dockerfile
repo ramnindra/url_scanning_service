@@ -7,8 +7,10 @@ RUN apt-get -y --no-install-recommends install nginx supervisor
 
 RUN pip3 install uwsgi
 RUN pip3 install redis
-RUN pip3 install pytest
-RUN pip3 install flask
+
+COPY ./requirements.txt /urlhome/requirements.txt
+
+RUN pip3 install -r /urlhome/requirements.txt
 
 RUN useradd --no-create-home nginx
 
@@ -16,6 +18,8 @@ COPY nginx/nginx.conf /etc/nginx/
 COPY nginx/flask_nginx.conf /etc/nginx/conf.d/
 COPY nginx/uwsgi.ini /etc/uwsgi/
 COPY nginx/supervisord.conf /etc/supervisor/
+
+
 
 RUN rm /etc/nginx/sites-enabled/default
 RUN rm -r /root/.cache
