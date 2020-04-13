@@ -27,12 +27,12 @@ docker system prune -a
 ## 3. Init docker swarm
 
 docker swarm init
-## deploy using docker swarm
+## 4. Deployment
 docker stack deploy --compose-file docker-compose.yml url_scanning_service
 
 Output of above CLI looks like this.
 
-RREGAR-M-R0HQ:url_scanning_service rregar$ docker stack deploy --compose-file docker-compose.yml url_scanning_service
+Ram-Mac:url_scanning_service rregar$ docker stack deploy --compose-file docker-compose.yml url_scanning_service
 Ignoring unsupported options: build
 
 Creating network url_scanning_service_redis
@@ -42,60 +42,62 @@ Creating service url_scanning_service_urldb
 Creating service url_scanning_service_proxy
 
 Creating service url_scanning_service_app
-RREGAR-M-R0HQ:url_scanning_service rregar$ 
+Ram-Mac:url_scanning_service rregar$ 
 
-## Check the services in stack
-RREGAR-M-R0HQ:url_scanning_service rregar$ docker stack ls
+## 5. Check the services in stack
+Ram-Mac:url_scanning_service rregar$ docker stack ls
 NAME                   SERVICES            ORCHESTRATOR
 url_scanning_service   3                   Swarm
-RREGAR-M-R0HQ:url_scanning_service rregar$ 
+Ram-Mac:url_scanning_service rregar$ 
 
-## List the containers
-RREGAR-M-R0HQ:url_scanning_service rregar$ docker stack ps url_scanning_service
+## 6. List the containers
+Ram-Mac:url_scanning_service rregar$ docker stack ps url_scanning_service
 ID                  NAME                           IMAGE               NODE                DESIRED STATE       CURRENT STATE           ERROR               PORTS
 hysrwwl4tm11        url_scanning_service_app.1     webapp:latest       docker-desktop      Running             Running 2 minutes ago                       
 hjyyf2n65iaj        url_scanning_service_proxy.1   nginx:alpine        docker-desktop      Running             Running 2 minutes ago                       
 jncq6ag1l7ui        url_scanning_service_urldb.1   redis:latest        docker-desktop      Running             Running 2 minutes ago                       
 uqu413jpqmr6        url_scanning_service_app.2     webapp:latest       docker-desktop      Running             Running 2 minutes ago                       
-RREGAR-M-R0HQ:url_scanning_service rregar$ 
+Ram-Mac:url_scanning_service rregar$ 
 
-## Logs from each container
-RREGAR-M-R0HQ:url_scanning_service rregar$ docker ps
+## 7. Logs from each container
+Ram-Mac:url_scanning_service rregar$ docker ps
 CONTAINER ID        IMAGE               COMMAND                  CREATED             STATUS              PORTS               NAMES
 b7fef5c23194        redis:latest        "docker-entrypoint.s…"   3 minutes ago       Up 3 minutes        6379/tcp            url_scanning_service_urldb.1.jncq6ag1l7uithvb4mnuuan27
 7a6c29def702        nginx:alpine        "nginx -g 'daemon of…"   3 minutes ago       Up 3 minutes        80/tcp              url_scanning_service_proxy.1.hjyyf2n65iaj5zd2m5brrdif5
 2a7a43c19ad1        webapp:latest       "/usr/bin/supervisord"   3 minutes ago       Up 3 minutes                            url_scanning_service_app.2.uqu413jpqmr6t7g1qusd2b0s4
 868ec0a221ac        webapp:latest       "/usr/bin/supervisord"   3 minutes ago       Up 3 minutes                            url_scanning_service_app.1.hysrwwl4tm11suwxh4pk7v7bh
-RREGAR-M-R0HQ:url_scanning_service rregar$ 
-RREGAR-M-R0HQ:url_scanning_service rregar$ docker logs 2a7a43c19ad1
+Ram-Mac:url_scanning_service rregar$ 
+Ram-Mac:url_scanning_service rregar$ docker logs 2a7a43c19ad1
 /usr/lib/python2.7/dist-packages/supervisor/options.py:461: UserWarning: Supervisord is running as root and it is searching for its configuration file in default locations (including its current working directory); you probably want to specify a "-c" argument specifying an absolute path to a configuration file for improved security.
   'Supervisord is running as root and it is searching '
 2020-04-13 04:02:55,259 CRIT Supervisor is running as root.  Privileges were not dropped because no user is specified in the config file.  If you intend to run as root, you can set user=root in the config file to avoid this message.
 2020-04-13 04:02:55,270 INFO supervisord started with pid 1
 2020-04-13 04:02:56,274 INFO spawned: 'nginx' with pid 8
 
-## Add Bad URL to this system
+## 8. Add Bad URL to this system
 curl http://0.0.0.0:9000/add_url_api?url=thisisbadurl.com
 
-RREGAR-M-R0HQ:url_scanning_service rregar$ curl http://0.0.0.0:9000/add_url_api?url=thisisbadurl.com
+Ram-Mac:url_scanning_service rregar$ curl http://0.0.0.0:9000/add_url_api?url=thisisbadurl.com
 Insert thisisbadurl.com added into redis!
-RREGAR-M-R0HQ:url_scanning_service rregar$ 
+Ram-Mac:url_scanning_service rregar$ 
 
-## Check if this is badurl
-RREGAR-M-R0HQ:url_scanning_service rregar$ curl http://0.0.0.0:9000/check_url_api?url=thisisbadurl.com
+## 9. Check if this is badurl
+Ram-Mac:url_scanning_service rregar$ curl http://0.0.0.0:9000/check_url_api?url=thisisbadurl.com
 Url thisisbadurl.com is bad
-RREGAR-M-R0HQ:url_scanning_service rregar$ 
+Ram-Mac:url_scanning_service rregar$ 
 
 and check for good URL
-RREGAR-M-R0HQ:url_scanning_service rregar$ curl http://0.0.0.0:9000/check_url_api?url=thisisnotbadurl.com
+Ram-Mac:url_scanning_service rregar$ curl http://0.0.0.0:9000/check_url_api?url=thisisnotbadurl.com
 Url thisisnotbadurl.com is safe
-RREGAR-M-R0HQ:url_scanning_service rregar$ 
+Ram-Mac:url_scanning_service rregar$ 
 
-## List all bad URLs
+## 10. List all bad URLs
 curl http://0.0.0.0:9000/list_url_api
 Some of them all. I can not put full list
-RREGAR-M-R0HQ:url_scanning_service rregar$ curl http://0.0.0.0:9000/list_url_api
+Ram-Mac:url_scanning_service rregar$ curl http://0.0.0.0:9000/list_url_api
 b'thisisbadurl.com'
 b'75ww.com'
 b'boquan.net'
 
+## 10. Answer to design questions
+Please look into ppt file
