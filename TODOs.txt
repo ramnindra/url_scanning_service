@@ -1,0 +1,7 @@
+
+1. Need to figure out how to forward requests to appropriate DB depending on type of request (Read/Write)
+2. Find out how to configure docker load balancing with docker swarm.
+3. Configure DB to take periodic snapshot and retrieve from it after crash
+4. How to configure auto scalling in docker swarms so once VM limit is read it can spawn another. 
+5. Add Makefile to automate whole process with various options.
+6. UnitTest cases needs to be enhanced.
